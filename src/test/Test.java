@@ -1,5 +1,6 @@
 package test;
 
+import mapper.UserMapper;
 import model.User;
 import org.apache.ibatis.io.Resources;
 import org.apache.ibatis.session.SqlSession;
@@ -31,10 +32,14 @@ public class Test {
             //user.setUserName("刘豪");
             //sqlSession.update("mapper.UserMapper.updateUserById",user);
             //sqlSession.delete("mapper.UserMapper.deleteUserById",id);
-            List<Map<String,Object>> list = sqlSession.selectList("mapper.UserMapper.selectUserAsMap");
+            /*List<Map<String,Object>> list = sqlSession.selectList("mapper.UserMapper.selectUserAsMap");
            for (Map<String,Object> row: list){
                 System.out.print(row);
-           }
+           }*/
+            //通过mapper借口的代理对象访问mybatis
+            UserMapper userMapper = sqlSession.getMapper(UserMapper.class);
+            User user = userMapper.selectUserById(id);
+            System.out.println(user);
             sqlSession.commit();
             sqlSession.close();
             //System.out.println(user);
