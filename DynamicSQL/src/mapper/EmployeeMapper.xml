@@ -2,6 +2,7 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--测试if-->
 <mapper namespace="mapper.EmployeeMapper">
     <select id="selectEmployeeByIdLike" resultType="model.Employee">
         SELECT * FROM employee WHERE state ='ACTIVE'
@@ -9,4 +10,64 @@
             AND id = #{id}
         </if>
     </select>
-</mapper>
+    <!--测试when-->
+    <select id="selectEmployeeChoose" parameterType="hashmap"
+            resultType="model.Employee">
+        SELECT * from employee WHERE state = 'ACTIVE'
+        <choose>
+            <when test="id != null">
+                AND id = #{id}
+            </when>
+            <when test="loginname != null and password != null">
+                AND loginname = #{loginname} AND password = #{password}
+            </when>
+            <otherwise>
+                AND sex ='男'
+            </otherwise>
+        </choose>
+    </select>
+    <!--测试where-->
+    <select id="selectEmployeeLike"
+            resultType="model.Employee">
+        SELECT * FROM employee
+        <where>
+            <if test="state != null">
+                state = #{state}
+            </if>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="loginname != null and password != null">
+                and loginname = #{loginname} and password =#{password}
+            </if>
+        </where>
+    </select>
+    <select id="selectEmployeeById" parameterType="int"
+            resultType="model.Employee">
+        SELECT * FROM employee WHERE id = #{id}
+    </select>
+    <!--测试set-->
+    <select id="updateEmployeeIfNessary" parameterType="model.Employee">
+        UPDATE employee
+        <set>
+            <if test="loginname != null">loginname = #{loginname},</if>
+            <if test="password != null">password = #{password},</if>
+            <if test="name != null">name = #{name},</if>
+            <if test="sex != null">sex = #{sex},</if>
+            <if test="age != null">age = #{age},</if>
+            <if test="phone != null">phone = #{phone},</if>
+            <if test="sal != null">sal = #{sal},</if>
+            <if test="state != null">state = #{state}</if>
+        </set>
+        where id = #{id}
+    </select>
+    <!--测试foreach-->
+    <select id="selectEmployeeIn" resultType="model.Employee">
+        SELECT * FROM employee
+        WHERE id IN
+        <foreach collection="list" index="index" item="item"
+                 open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </select>
+ </mapper>
